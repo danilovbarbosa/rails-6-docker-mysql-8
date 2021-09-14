@@ -1,14 +1,36 @@
-FROM ruby:alpine
+FROM ruby:3
 
-RUN apk update && apk add bash build-base nodejs postgresql-dev tzdata
+ENV LANG C.UTF-8
+ENV APP_ROOT /app
 
-RUN mkdir /project
-WORKDIR /project
+# install required libraries
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+  apt-get update -qq && \
+  apt-get install -y --no-install-recommends \
+  build-essential \
+  nodejs \
+  yarn && \
+  apt-get clean && \
+  rm --recursive --force /var/lib/apt/lists/*
 
-COPY Gemfile Gemfile.lock ./
-RUN gem install bundler --no-document
-RUN bundle install --no-binstubs --jobs $(nproc) --retry 3
+# create working directory
+RUN mkdir $APP_ROOT
+WORKDIR $APP_ROOT
 
-COPY . .
+# bundle install
+COPY Gemfile $APP_ROOT/Gemfile
+COPY Gemfile.lock $APP_ROOT/Gemfile.lock
+RUN bundle install --jobs 4 --retry 3
+
+# create app in container
+COPY . $APP_ROOT
+
+# script to be executed every time the container starts
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 3000
+
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
