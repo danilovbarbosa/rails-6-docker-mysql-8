@@ -1,24 +1,21 @@
-#
 default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: root
-  password: root
-  host: localhost
+  username: <%= ENV.fetch('MYSQL_USERNAME') { 'root' } %>
+  password: <%= ENV.fetch('MYSQL_PASSWORD') { 'password' } %>
+  host: <%= ENV.fetch('MYSQL_HOST') { 'db' } %>
 
 development:
   <<: *default
-  database: rails_6_docker_mysql_8_development
-
+  database: rails_app_dev
 
 test:
   <<: *default
-  database: rails_6_docker_mysql_8_test
-
+  database: rails_app_test
 
 production:
   <<: *default
-  database: rails_6_docker_mysql_8_production
-  username: rails_6_docker_mysql_8
-  password: <%= ENV['RAILS_6_DOCKER_MYSQL_8_DATABASE_PASSWORD'] %>
+  database: rails_app_prd
+  username: app
+  password: hoge
