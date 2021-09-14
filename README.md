@@ -126,6 +126,7 @@ Este projeto é um projeto modelo.
 - Execute:
 
   ```sh
+  docker-compose build
   docker-compose run --rm web bin/rails webpacker:install
   ```
 
@@ -137,7 +138,7 @@ Este projeto é um projeto modelo.
     encoding: utf8mb4
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     username: <%= ENV.fetch('MYSQL_USERNAME') { 'root' } %>
-    password: <%= ENV.fetch('MYSQL_PASSWORD') { 'password' } %>
+    password: <%= ENV.fetch('MYSQL_PASSWORD') { '' } %>
     host: <%= ENV.fetch('MYSQL_HOST') { 'db' } %>
 
   development:
