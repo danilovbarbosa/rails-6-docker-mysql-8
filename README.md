@@ -71,31 +71,31 @@ Este projeto é um projeto modelo.
   version: "3"
 
   services:
-  db:
-    image: "mysql:8"
-    ports:
-      - "3306:3306"
-    restart: always
-    volumes:
-      - mysql:/var/lib/mysql:delegated
-    environment:
-    MYSQL_ROOT_PASSWORD: root
-    command: --default-authentication-plugin=mysql_native_password
+    db:
+      image: "mysql:8"
+      ports:
+        - "3306:3306"
+      restart: always
+      volumes:
+        - mysql:/var/lib/mysql:delegated
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+      command: --default-authentication-plugin=mysql_native_password
 
-  web:
-    depends_on:
-      - "db"
-    build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_HOST=db
-    volumes:
-      - .:/app:cached
-      - bundle:/usr/local/bundle:delegated
-      - node_modules:/app/node_modules
-      - tmp-data:/app/tmp/sockets
+    web:
+      depends_on:
+        - "db"
+      build: .
+      command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+      ports:
+        - "3000:3000"
+      environment:
+        - DATABASE_HOST=db
+      volumes:
+        - .:/app:cached
+        - bundle:/usr/local/bundle:delegated
+        - node_modules:/app/node_modules
+        - tmp-data:/app/tmp/sockets
 
   volumes:
     mysql:
